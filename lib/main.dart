@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'TODO ME',
       theme: ThemeManager.instance.lightTheme,
       onGenerateRoute:ServiceLocator.I.getIt<RouterManager>().onGenerateRoute,
-      initialRoute: ServiceLocator.I.getIt<RouterManager>().login,
+      initialRoute: ServiceLocator.I.getIt<RouterManager>().splash,
     );
   }
 }
