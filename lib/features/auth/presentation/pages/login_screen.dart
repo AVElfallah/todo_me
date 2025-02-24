@@ -1,8 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/assets/assets_manager.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
+
+import '../../../../app/routers/router_manager.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -42,7 +46,7 @@ class LoginScreen extends StatelessWidget {
           TextFormField(
             decoration: const InputDecoration(hintText: 'Email Address'),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           TextFormField(
             decoration: const InputDecoration(hintText: 'Password'),
           ),
@@ -55,7 +59,7 @@ class LoginScreen extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           Center(child: Text('or Signin with')),
-          const SizedBox(height: 40),
+          const SizedBox(height: 10),
           Align(
             alignment: Alignment.center,
             child: GestureDetector(
@@ -87,7 +91,10 @@ class LoginScreen extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  // TODO: Implement Navigate to Register Logic
+                  Navigator.pushReplacementNamed(
+                    context,
+                    ServiceLocator.I.getIt<RouterManager>().register,
+                  );
                 },
                 child: Text(
                   'Sign Up',
