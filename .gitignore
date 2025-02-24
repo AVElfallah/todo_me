@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+**/.requirements.yaml
+**/lib/.flutter_widget_test.dart
+**/lib/.flutter_widget_test_dart.dart
