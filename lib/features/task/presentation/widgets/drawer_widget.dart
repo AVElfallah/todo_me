@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_me/assets/assets_manager.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
 
+import '../../../../app/routers/router_manager.dart';
+import '../../../../app/service_locator.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+
 class HomeCustomDrawer extends StatelessWidget {
   const HomeCustomDrawer({super.key});
 
@@ -93,7 +97,14 @@ class HomeCustomDrawer extends StatelessWidget {
               ),
               title: const Text('Logout'),
               onTap: () {
-                //TODO - implement logout
+              ServiceLocator.I.getIt<AuthBloc>().add(AuthSignOutEvent(
+                (state){
+                  Navigator.of(context).pushReplacementNamed(
+                    ServiceLocator.I.getIt<RouterManager>().login,
+                  );
+                }
+              ));
+              
               },
             ),
           ),

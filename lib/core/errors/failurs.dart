@@ -9,3 +9,7 @@ class ServerFailure extends Failures {
 class CacheFailure extends Failures {
   CacheFailure(super.message);
 }
+
+class ValidationFailure extends Failures {
+  ValidationFailure(super.message);
+}
