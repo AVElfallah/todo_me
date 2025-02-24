@@ -12,5 +12,8 @@ static const String splashScreenIconSVG='assets/svgs/splash_screen_icon.svg';
 
 
 static const String astronautManPng= 'assets/images/astronaut_man.png';
-
+static const String checkPng= 'assets/images/check.png';
+static const String abacusPng ='assets/images/abacus.png';
+static const String logoutPng="assets/images/logout.png";
+static const String signalPng="assets/images/signal.png";
 }
