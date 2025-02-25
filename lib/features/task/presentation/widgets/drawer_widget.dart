@@ -5,7 +5,7 @@ import 'package:todo_me/core/theme/app_colors.dart';
 
 import '../../../../app/routers/router_manager.dart';
 import '../../../../app/service_locator.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/application/bloc/auth_bloc.dart';
 
 class HomeCustomDrawer extends StatelessWidget {
   const HomeCustomDrawer({super.key});

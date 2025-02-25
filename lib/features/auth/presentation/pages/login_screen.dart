@@ -6,11 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/assets/assets_manager.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
-import 'package:todo_me/core/utils/loading_overly.dart';
-import 'package:todo_me/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:todo_me/app/common/loading_overly.dart';
+import 'package:todo_me/core/utils/validators.dart';
+import 'package:todo_me/features/auth/application/bloc/auth_bloc.dart';
 
 import '../../../../app/routers/router_manager.dart';
-import '../../domain/usecases/validation_usecase.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -68,7 +68,7 @@ class LoginScreen extends StatelessWidget {
                   controller: _emailController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
-                    return EmailValidationUseCase().call(value).fold((l) => null, (r) => r);
+                    return Validators.email(value).fold((l) => null, (r) => r);
                   },
                   decoration: const InputDecoration(hintText: 'Email Address'),
                 ),
@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                     controller: _passwordController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      return PasswordValidationUseCase().call(value).fold((l) => null, (r) => r);
+                      return Validators.password(value).fold((l) => null, (r) => r);
                     },
                     obscureText: obTextVal,
                     decoration: InputDecoration(hintText: 'Password',

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_me/app/service_locator.dart';
-import 'package:todo_me/core/utils/loading_overly.dart';
-import 'package:todo_me/features/auth/domain/usecases/validation_usecase.dart';
-import 'package:todo_me/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:todo_me/app/common/loading_overly.dart';
+import 'package:todo_me/features/auth/application/bloc/auth_bloc.dart';
 
 import '../../../../app/routers/router_manager.dart';
 import '../../../../assets/assets_manager.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/validators.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -58,8 +58,7 @@ class RegisterScreen extends StatelessWidget {
               controller: _nameController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
-                return NameValidationUseCase()
-                    .call(value)
+                return Validators.name(value)
                     .fold((l) => null, (r) => r);
               },
               decoration: const InputDecoration(hintText: 'Full Name'),
@@ -71,8 +70,7 @@ class RegisterScreen extends StatelessWidget {
               controller: _emailController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
-                return EmailValidationUseCase()
-                    .call(value)
+                return Validators.email(value)
                     .fold((l) => null, (r) => r);
               },
               decoration: const InputDecoration(hintText: 'Email Address'),
@@ -87,8 +85,7 @@ class RegisterScreen extends StatelessWidget {
                     controller: _passwordController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      return PasswordValidationUseCase()
-                          .call(value)
+                      return Validators.password(value)
                           .fold((l) => null, (r) => r);
                     },
                     obscureText: obTextVal,

@@ -6,8 +6,8 @@ import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/core/theme/theme_manager.dart';
 import 'package:todo_me/firebase_options.dart';
 
-import 'core/utils/loading_overly.dart';
-import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'app/common/loading_overly.dart';
+import 'features/auth/application/bloc/auth_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -8,7 +8,7 @@ import 'package:todo_me/features/auth/domain/usecases/auth_usecase.dart';
 
 import '../features/auth/data/datasources/auth_data_source.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
-import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../features/auth/application/bloc/auth_bloc.dart';
 
 class ServiceLocator {
 ServiceLocator._();

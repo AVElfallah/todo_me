@@ -1,10 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../../../../core/usecases/usecase.dart';
 
-class EmailValidationUseCase extends ValidationUseCase<String?, void, String?> {
-  @override
-  Either<void, String?> call(String? params){
+class Validators {
+  static Either<void, String?> email(String? params) {
     if (params == null) {
       return Right('Email is required');
     }
@@ -14,12 +12,9 @@ class EmailValidationUseCase extends ValidationUseCase<String?, void, String?> {
       return Right('Email is invalid');
     }
     return Left(null);
-  }  
-}
+  }
 
-class PasswordValidationUseCase extends ValidationUseCase<String?, void, String?> {
-  @override
-  Either<void, String?> call(String? params){
+  static Either<void, String?> password(String? params) {
     if (params == null) {
       return Right('Password is required');
     }
@@ -27,13 +22,9 @@ class PasswordValidationUseCase extends ValidationUseCase<String?, void, String?
       return Right('Password must be at least 6 characters');
     }
     return Left(null);
-  }  
-}
+  }
 
-
-class NameValidationUseCase extends ValidationUseCase<String?, void, String?> {
-  @override
-  Either<void, String?> call(String? params){
+  static Either<void, String?> name(String? params) {
     if (params == null) {
       return Right('Name is required');
     }
@@ -41,5 +32,5 @@ class NameValidationUseCase extends ValidationUseCase<String?, void, String?> {
       return Right('Name must be at least 3 characters');
     }
     return Left(null);
-  }  
+  }
 }
