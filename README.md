@@ -41,6 +41,46 @@ Contributions are welcome! Please fork the repository and create a pull request.
 - FirebaseAuth
 - FirebaseFireStore
 
+## App Video 😊 
+
+<link href="video_shots/vid2.mp4" rel="nofollow">
+Click here to view the video
+</link>
+
 ## 📸 Screenshots
 
 Stay tuned for screenshots showcasing the app's features and user interface!
+
+1. Splash Screen
+<div align='center'>
+   <a href="url"><img src="screenshots/splash_screen.png" align="center" height="600" width="300" ></a>
+</div>
+
+
+2. Login Screen
+<div align='center'>
+   <a href="url"><img src="screenshots/login_screen.png" align="center" height="600" width="300" ></a>
+   </div>
+
+
+3. SignUp Screen
+<div align='center'>
+   <a href="url"><img src="screenshots/register_screen.png" align="center" height="600" width="300" ></a>
+   </div>
+
+
+4. Home Screen
+<div align='center'>
+   <a href="url"><img src="screenshots/task_screen.png" align="center" height="600" width="300" ></a>
+
+   </div>
+
+5. Empty Task
+<div align="center">
+<a href="url"><img src="screenshots/empty_tasks.png" align="center" height="600" width="300" ></a>
+</div>
+
+6. Drawer
+<div align="center">
+<a href="url"><img src="screenshots/drawer.png" align="center" height="600" width="300" ></a>
+</div>
