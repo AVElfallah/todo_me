@@ -59,34 +59,38 @@ class ToggleTodoTaskUseCase extends UseCase<TodoTask, String> {
   }}
 
 
-
+  @Deprecated('This class will be deprecated in future releases')
   class GetTodoTasksUseCase extends StreamUseCase<List<TodoTask>, NoParms> {
-  final TodoTaskRepository repository;
-  GetTodoTasksUseCase(this.repository);
-  @override
-  Stream<Either<Failures, List<TodoTask>>> call(NoParms prams) async* {
-    // get data from repository
-    var getTodoTasks =  repository.getTodoTasks();
-    yield* getTodoTasks;
-  }}
+    final TodoTaskRepository repository;
+    GetTodoTasksUseCase(this.repository);
+    @override
+    Stream<Either<Failures, List<TodoTask>>> call(NoParms prams) async* {
+      // get data from repository
+      var getTodoTasks = repository.getTodoTasks();
+      yield* getTodoTasks;
+    }
+  }
 
-  class  GetOfflineTodoTasksUseCase extends StreamUseCase<List<TodoTask>, NoParms> {
-  final TodoTaskRepository repository;
-  GetOfflineTodoTasksUseCase(this.repository);
-  @override
-  Stream<Either<Failures, List<TodoTask>>> call(NoParms prams) async* {
-    // get data from repository
-    var getOfflineTodoTasks =  repository.getOfflineTodoTasks();
-    yield* getOfflineTodoTasks;
-  }}
+  @Deprecated('This class will be deprecated in future releases')
+  class GetOfflineTodoTasksUseCase extends StreamUseCase<List<TodoTask>, NoParms> {
+    final TodoTaskRepository repository;
+    GetOfflineTodoTasksUseCase(this.repository);
+    @override
+    Stream<Either<Failures, List<TodoTask>>> call(NoParms prams) async* {
+      // get data from repository
+      var getOfflineTodoTasks = repository.getOfflineTodoTasks();
+      yield* getOfflineTodoTasks;
+    }
+  }
 
-
+  @Deprecated('This class will be deprecated in future releases')
   class GetOnlineTodoTasksUseCase extends StreamUseCase<List<TodoTask>, NoParms> {
-  final TodoTaskRepository repository;
-  GetOnlineTodoTasksUseCase(this.repository);
-  @override
-  Stream<Either<Failures, List<TodoTask>>> call(NoParms prams) async* {
-    // get data from repository
-    var getOnlineTodoTasks =  repository.getOnlineTodoTasks();
-    yield* getOnlineTodoTasks;
-  }}
+    final TodoTaskRepository repository;
+    GetOnlineTodoTasksUseCase(this.repository);
+    @override
+    Stream<Either<Failures, List<TodoTask>>> call(NoParms prams) async* {
+      // get data from repository
+      var getOnlineTodoTasks = repository.getOnlineTodoTasks();
+      yield* getOnlineTodoTasks;
+    }
+  }
