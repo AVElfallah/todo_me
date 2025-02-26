@@ -137,9 +137,7 @@ class RegisterScreen extends StatelessWidget {
                 onTap: () {
                   ServiceLocator.I.getIt<AuthBloc>().add(
                     AuthSignUpWithGoogleEvent((state) {
-                      LoadingOverlay().show(context);
                       if (state is AuthRegisterSuccessState) {
-                        LoadingOverlay().hide();
                         Navigator.of(context).pushReplacementNamed(
                           ServiceLocator.I.getIt<RouterManager>().home,
                         );

@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/assets/assets_manager.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
-import 'package:todo_me/app/common/loading_overly.dart';
 import 'package:todo_me/core/utils/validators.dart';
 import 'package:todo_me/features/auth/application/bloc/auth_bloc.dart';
 
@@ -97,7 +96,6 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () {
-                    LoadingOverlay().show(context);
                     if (_formKey.currentState!.validate()) {
                       ServiceLocator.I.getIt<AuthBloc>().add(AuthLoginEvent(
                         _emailController.text,
@@ -108,12 +106,10 @@ class LoginScreen extends StatelessWidget {
                               ServiceLocator.I.getIt<RouterManager>().home
                             );
                           }
-                          LoadingOverlay().hide();
                         },
                       ));
                     }
                     else {
-                      LoadingOverlay().hide();
                     }
                   },
                   child: const Text('Sign In'),
@@ -125,11 +121,9 @@ class LoginScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () {
-                      LoadingOverlay().show(context);
                       ServiceLocator.I.getIt<AuthBloc>().add(AuthLoginWithGoogleEvent(
                         (state){
                             if (state is AuthLoginSuccessState) {
-                          LoadingOverlay().hide();
                           Navigator.of(context).pushReplacementNamed(
 ServiceLocator.I.getIt<RouterManager>().home
                           );
