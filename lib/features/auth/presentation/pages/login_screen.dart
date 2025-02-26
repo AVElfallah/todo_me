@@ -24,7 +24,6 @@ class LoginScreen extends StatelessWidget {
       final TextEditingController _passwordController = TextEditingController();
 
     return BlocConsumer<AuthBloc, AuthState>(
-   
       listener: (context, state) {
         
       },

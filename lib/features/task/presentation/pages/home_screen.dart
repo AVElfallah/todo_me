@@ -30,11 +30,11 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
-    // BlocProvider.of<TodoTaskBloc>(context).add(GetTodoTasksEvent());
   }
 
   @override
   void dispose() {
+    
     super.dispose();
   }
 
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
               Overlay.of(context),
               CustomSnackBar.info(message: "Loading Tasks Please Wait..."),
             );
-            ;
+            
             break;
           case TaskDeletedState():
             showTopSnackBar(
