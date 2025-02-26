@@ -3,7 +3,7 @@ abstract class Failures {
   Failures(this.message);
 }
 
-class ServerFailure extends Failures {
+class ServerFailure extends Failures   {
   ServerFailure(super.message);
 }
 class CacheFailure extends Failures {

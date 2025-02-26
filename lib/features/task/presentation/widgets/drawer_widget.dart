@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:todo_me/assets/assets_manager.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
 
@@ -12,8 +15,7 @@ class HomeCustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO - this widget needs [user name] and [Connection Status]
-    //TODO - this widget needs [logout function], [tasks completed] and [tasks count] 
+
     final width = MediaQuery.of(context).size.width;
     return Container(
       width: width * .55,
@@ -23,7 +25,7 @@ class HomeCustomDrawer extends StatelessWidget {
         children: [
           DrawerHeader(child: Image.asset(AssetsManager.astronautManPng)),
           Text(
-            'Hi, Abdulrahman',
+            'Hi, ${FirebaseAuth.instance.currentUser?.displayName??'Google User'}',
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.w500,
@@ -38,53 +40,24 @@ class HomeCustomDrawer extends StatelessWidget {
               height: 30,
             ),
             title: const Text('Status'),
-            trailing: Text(
-              'online',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: AppColors.customGreenColor,
-              ),
+            trailing: StreamBuilder<InternetStatus>(
+              stream: InternetConnection().onStatusChange,
+              builder: (context, snapshot) {
+                return Text(
+                  snapshot.data == InternetStatus.connected ? 'online' : 'offline'
+                  ,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color:snapshot.data == InternetStatus.connected ? AppColors.customGreenColor :Colors.red
+                  ),
+                );
+              }
             ),
             onTap: () {},
             
           ),
-          ListTile(
-            leading: Image.asset(
-              AssetsManager.abacusPng,
-              width: 30,
-              height: 30,
-            ),
-            title: const Text('All Tasks'),
-            trailing: Text(
-              '10',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: AppColors.mainTextColor,
-              ),
-            ),
-
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Image.asset(
-              AssetsManager.checkPng,
-              width: 30,
-              height: 30,
-            ),
-            title: const Text('Completed Tasks'),
-            trailing: Text(
-              '5',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: AppColors.customGreenColor,
-              ),
-            ),
-
-            onTap: () {},
-          ),
+         
           Spacer(),
 
           ColoredBox(
@@ -99,6 +72,9 @@ class HomeCustomDrawer extends StatelessWidget {
               onTap: () {
               ServiceLocator.I.getIt<AuthBloc>().add(AuthSignOutEvent(
                 (state){
+                  //Todo crate best practice to clear all data if  user logout
+                  // this is bad practice but time is limited
+                  Hive.openBox('tasks').then((value) => value.clear());
                   Navigator.of(context).pushReplacementNamed(
                     ServiceLocator.I.getIt<RouterManager>().login,
                   );

@@ -5,6 +5,10 @@ abstract class UseCase<Type, Prams> {
   Future<Either<Failures, Type>> call(Prams prams);
 }
 
+abstract class  StreamUseCase<Type, Prams> {
+  Stream<Either<Failures, Type>> call(Prams prams);
+  
+}
 
 abstract class Params {}
 

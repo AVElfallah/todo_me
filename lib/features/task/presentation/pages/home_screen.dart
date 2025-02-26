@@ -1,12 +1,19 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
+import 'package:todo_me/features/task/presentation/bloc/task_bloc.dart';
+import 'package:todo_me/features/task/presentation/bloc/task_state.dart';
+import 'package:todo_me/features/task/presentation/widgets/task_line_widget.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../../../core/usecases/usecase.dart';
+import '../../domain/usecases/task_usecase.dart';
 import '../widgets/drawer_widget.dart';
 import '../widgets/note_page_widget.dart';
-import '../widgets/task_new_line_widget.dart';
+import '../widgets/add_new_task_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,126 +24,134 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  //[_pageFlipAcceleration] to controls the page fliping values in ui and make it changing
-  //[_isClicked] to handle if widget is draged or not
-  final ValueNotifier<double> _pageFlipAcceleration = ValueNotifier(0);
-  bool _isClicked = false;
-
+  final dataStream = ServiceLocator.I.getIt<GetTodoTasksUseCase>().call(
+    NoParms(),
+  );
   @override
   void initState() {
     super.initState();
+    // BlocProvider.of<TodoTaskBloc>(context).add(GetTodoTasksEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Todo Me'),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+    final size = MediaQuery.of(context).size;
+    return BlocConsumer<TodoTaskBloc, TaskState>(
+      listener: (BuildContext context, TaskState state) {
+        debugPrint("state: $state");
+        switch (state) {
+          
+          case TaskLoadingState():
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.info(message: "Loading Tasks Please Wait..."),
+            );
+            ;
+            break;
+          case TaskDeletedState():
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.success(message: "Task Deleted Successfully"),
+            );
+            break;
+          case TaskCreatedState():
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.success(message: "Task Created Successfully"),
+            );
+            break;
+          case TaskUpdatedState():
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.success(message: "Task Updated Successfully"),
+            );
+            break;
+          case TodoTaskErrorState():
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.error(
+                message: "There is an error please try again",
+              ),
+            );
+            break;
+          default:
+        }
+      },
+      builder: (BuildContext context, TaskState state) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: _appBarLayout(),
+          drawer: HomeCustomDrawer(),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: SvgPicture.asset(
+                  'assets/svgs/note_pin.svg',
+
+                  width: size.width * .5,
+                  height: size.height * .09,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              StreamBuilder(
+                stream: dataStream,
+                builder: (context, snapshot) {
+                  return NotePageWidget(
+                    containerColor: Colors.white,
+                    children: [
+                      if (snapshot.hasError) Center(child: Text('Error')),
+                      ...[
+                        AddNewTaskWidget(height: size.height * .065),
+                        if (snapshot.hasData)
+                          snapshot.data!.fold(
+                            (error) => const Text('Error'),
+                            (tasks) =>
+                                tasks.isEmpty
+                                    ? NotePageWidget.withEndTaskContainer()
+                                    : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: tasks.length,
+                                      itemBuilder: (context, index) {
+                                        return TaskLineWidget(
+                                          key: ValueKey(tasks[index].id),
+                                          todoTask: tasks[index],
+                                          height: size.height * .065,
+                                        );
+                                      },
+                                    ),
+                          ),
+                      ],
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
+        );
+      },
+    );
+  }
+
+  AppBar _appBarLayout() {
+    return AppBar(
+      title: const Text('Todo Me'),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
         ),
-        centerTitle: true,
-        backgroundColor: AppColors.appBarColor,
-        foregroundColor: Colors.white,
-        elevation: 10,
       ),
-      drawer: HomeCustomDrawer(),
-      body: ValueListenableBuilder(
-        valueListenable: _pageFlipAcceleration,
-        builder:
-            (_, flipValue, _) => Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onPanStart: (d) {
-                    _isClicked = true;
-                  },
-                  onPanUpdate: (d) {
-                    if (_isClicked) {
-                      _pageFlipAcceleration.value =
-                          d.localPosition.dy / 350 * pi;
-                    }
-                  },
-                  onPanEnd: (d) {
-                    if (_isClicked) {
-                      var tempValue = (d.localPosition.dy / 350 * pi).round();
-                      if (tempValue < 2) {
-                        _pageFlipAcceleration.value = 0;
-                      } else if (tempValue > 4) {
-                        _pageFlipAcceleration.value = 0;
-                      } else {
-                        _pageFlipAcceleration.value = 11;
-                      }
-                      _isClicked = false;
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                      left: 20,
-                      right: 20,
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/svgs/note_pin.svg',
-      
-                      width: 500,
-                      height: 70,
-                    ),
-                  ),
-                ),
-                Stack(
-                  children: [
-                    NotePageWidget.withEndTaskContainer(),
-                    GestureDetector(
-                      onPanStart: (d) {
-                        _isClicked = true;
-                      },
-                      onPanUpdate: (d) {
-                        if (_isClicked) {
-                          _pageFlipAcceleration.value =
-                              d.localPosition.dy / 350 * pi;
-                        }
-                      },
-                      onPanEnd: (d) {
-                        if (_isClicked) {
-                          var tempValue =
-                              (d.localPosition.dy / 350 * pi).round();
-                          if (tempValue < 2) {
-                            _pageFlipAcceleration.value = 0;
-                          } else if (tempValue > 4) {
-                            _pageFlipAcceleration.value = 0;
-                          } else {
-                            _pageFlipAcceleration.value = 11;
-                          }
-                          _isClicked = false;
-                        }
-                      },
-                      child: Transform(
-                        origin: const Offset(0, 0),
-                        transform:
-                            Matrix4.identity()
-                              ..setEntry(2, 3, 0.0002)
-                              ..rotateX(_pageFlipAcceleration.value),
-                        child: NotePageWidget(
-                          isAnimated: true,
-                          containerColor: Colors.white,
-                          children: [
-                            for (var i = 0; i < 1; i++) TaskNewLineWidget(
-                              isNewTask: true,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-      ),
+      centerTitle: true,
+      backgroundColor: AppColors.appBarColor,
+      foregroundColor: Colors.white,
+      elevation: 10,
     );
   }
 }

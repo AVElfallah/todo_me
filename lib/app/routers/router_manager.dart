@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_me/core/usecases/usecase.dart';
 import 'package:todo_me/features/auth/domain/usecases/auth_usecase.dart';
 import 'package:todo_me/features/auth/presentation/pages/splash_screen.dart';
 
 import '../../features/auth/presentation/pages/login_screen.dart';
 import '../../features/auth/presentation/pages/register_screen.dart';
+import '../../features/task/presentation/bloc/task_bloc.dart';
 import '../../features/task/presentation/pages/home_screen.dart';
 import '../service_locator.dart';
 
@@ -49,7 +51,7 @@ class RouterManager {
                         return const SplashScreen();
                       },
                       (isLogIn) {
-                        return isLogIn ? HomeScreen() : SplashScreen();
+                        return isLogIn ? BlocProvider<TodoTaskBloc>(create: (_)=>TodoTaskBloc(ServiceLocator.I.getIt()),child:HomeScreen()) : SplashScreen();
                       },
                     );
                   }
@@ -66,7 +68,7 @@ class RouterManager {
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterScreen());
       case '/home':
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => BlocProvider<TodoTaskBloc>(create: (_)=>TodoTaskBloc(ServiceLocator.I.getIt()),child: HomeScreen()));
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
     }
