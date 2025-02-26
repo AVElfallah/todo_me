@@ -41,7 +41,7 @@ Contributions are welcome! Please fork the repository and create a pull request.
 - FirebaseAuth
 - FirebaseFireStore
 
-## App Video 
+## App Video 😊 
 
 <video src="video_shots/vid2.mp4" width="320" height="240" controls></video>
 
