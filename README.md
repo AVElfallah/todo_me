@@ -1,3 +1,4 @@
+
 # 📝 ToDoMe
 
 ToDoMe is a simple and intuitive task management app built using Flutter. It allows users to create, manage, and track their tasks efficiently and simply. Whether you're organizing your work tasks or personal to-dos, ToDoMe helps you stay on top of everything.
@@ -43,9 +44,7 @@ Contributions are welcome! Please fork the repository and create a pull request.
 
 ## App Video 😊 
 
-<link href="video_shots/vid2.mp4" rel="nofollow">
-Click here to view the video
-</link>
+[Click here to view the video](./video_shots/vid2.mp4)
 
 ## 📸 Screenshots
 
