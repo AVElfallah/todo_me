@@ -43,7 +43,9 @@ Contributions are welcome! Please fork the repository and create a pull request.
 
 ## App Video 😊 
 
-<video src="video_shots/vid2.mp4" width="320" height="240" controls></video>
+<link href="video_shots/vid2.mp4" rel="nofollow">
+Click here to view the video
+</link>
 
 ## 📸 Screenshots
 
