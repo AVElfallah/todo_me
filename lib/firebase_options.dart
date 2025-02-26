@@ -64,6 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '764738911671',
     projectId: 'testpython-74a58',
     storageBucket: 'testpython-74a58.firebasestorage.app',
+    iosClientId: '764738911671-go5v0htadd9g345t0kmq746qtf2v71fc.apps.googleusercontent.com',
     iosBundleId: 'com.example.todoMe',
   );
 
@@ -73,6 +74,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '764738911671',
     projectId: 'testpython-74a58',
     storageBucket: 'testpython-74a58.firebasestorage.app',
+    iosClientId: '764738911671-go5v0htadd9g345t0kmq746qtf2v71fc.apps.googleusercontent.com',
     iosBundleId: 'com.example.todoMe',
   );
 
@@ -85,4 +87,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'testpython-74a58.firebasestorage.app',
     measurementId: 'G-9JFCR0BPW4',
   );
+
 }
