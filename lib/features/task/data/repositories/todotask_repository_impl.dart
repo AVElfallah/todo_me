@@ -104,25 +104,9 @@ Stream<Either<Failures, List<TodoTask>>> getTodoTasks() async* {
   }
   
   @override
-  Stream<Either<Failures, List<TodoTask>>> getOfflineTodoTasks()async* {
-  try{
-   await for (var result in _offlineDataSource.getTodoTasks()){
-    yield Right(result.map((model) => model.toEntity()).toList());
-  }
-   
-   }
-   catch(e){
-    yield Left(CacheFailure(e.toString()));
-  }
+  Future<Either<Failures, bool>> syncTasks() {
+    // TODO: implement syncTasks
+    throw UnimplementedError();
   }
   
-  @override
-  Stream<Either<Failures, List<TodoTask>>> getOnlineTodoTasks()async* {
-    try{
-  await for (var result in _onlineDataSource.getTodoTasks()){
-    yield Right(result.map((model) => model.toEntity()).toList());
-  }}
-   catch(e){
-    yield Left(ServerFailure(e.toString()));
-  }}
 }

@@ -8,9 +8,12 @@ abstract class TodoTaskRepository {
   Future<Either<Failures,bool>> deleteTodoTask(String id);
   Future<Either<Failures,TodoTask>> updateTodoTask(TodoTask todoTask);
   Future<Either<Failures,TodoTask>> toggleTodoTask(String id);
+
+  @Deprecated('this function replaced')
   Stream<Either<Failures,List<TodoTask>>> getTodoTasks();
 
-  // test features
-  Stream<Either<Failures,List<TodoTask>>> getOfflineTodoTasks();
-  Stream<Either<Failures,List<TodoTask>>> getOnlineTodoTasks();
+
+
+  // new solution for sync data
+  Future<Either<Failures,bool>> syncTasks();
 }

@@ -71,6 +71,19 @@ class ToggleTodoTaskUseCase extends UseCase<TodoTask, String> {
     }
   }
 
+  class SyncTodoTasksDataUseCase extends UseCase<bool, NoParms> {
+    final TodoTaskRepository repository;
+    SyncTodoTasksDataUseCase(this.repository);
+    @override
+    Future<Either<Failures, bool>> call(NoParms prams) async {
+     
+      
+      return repository.syncTasks();
+    }
+  }
+
+  // Deprecated 
+
   @Deprecated('This class will be deprecated in future releases')
   class GetOfflineTodoTasksUseCase extends StreamUseCase<List<TodoTask>, NoParms> {
     final TodoTaskRepository repository;
