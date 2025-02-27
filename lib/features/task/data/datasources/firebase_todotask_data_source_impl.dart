@@ -54,7 +54,9 @@ class FirebaseTodotaskDataSourceImpl
     var snapshots = await userDoc.collection('tasks').get();
     // Get the lastDataUpdate timestamp from the user's document
     final lastDataUpdate =
-        (await userDoc.get()).data()!['lastDataUpdate'] as Timestamp;
+        ((await userDoc.get()).data()?['lastDataUpdate'] ??
+                Timestamp.fromDate(DateTime(1990)))
+            as Timestamp;
     // Return the tasks and the lastDataUpdate timestamp
     return (
       snapshots.docs.map((doc) => TodoTaskModel.fromJson(doc.data())).toList(),
@@ -69,11 +71,11 @@ class FirebaseTodotaskDataSourceImpl
 
     // Get the task from the user's collection
     final task = await userDoc.collection('tasks').doc(id).get();
-    final taskData = task.data()!;
+    final taskData = task.data() ?? {};
     // Toggle the task's completion status
     final updatedTask = TodoTaskModel.fromJson(
       taskData,
-    ).copyWith(isCompleted: !taskData['isCompleted']);
+    ).copyWith(isCompleted: !taskData['isCompleted']??false, updatedAt: DateTime.now());
     // Update the task in the user's collection
     await userDoc.collection('tasks').doc(id).update(updatedTask.toJson());
 
@@ -94,7 +96,7 @@ class FirebaseTodotaskDataSourceImpl
     await userDoc
         .collection('tasks')
         .doc(todoTask.id)
-        .update(todoTask.toJson());
+        .update(todoTask.copyWith(updatedAt: DateTime.now()).toJson());
 
     // lastDataUpdate to the current timestamp
     await userDoc.set({'lastDataUpdate': Timestamp.now()});
@@ -118,7 +120,7 @@ class FirebaseTodotaskDataSourceImpl
       final onlineData = await userDoc.collection('tasks').get();
       // get last update data
       final onlineLastDataUpdate =
-          (await userDoc.get()).data()!['lastDataUpdate'] as Timestamp?;
+          (await userDoc.get()).data()?['lastDataUpdate'] as Timestamp?;
       // get deleted tasks
       final onlineDeletedTasksData =
           await userDoc.collection('deletedTasks').get();
@@ -128,22 +130,22 @@ class FirebaseTodotaskDataSourceImpl
       if (
       // make comparison between the deleted tasks and the online deleted tasks
       // and make sure that the deleted tasks are the same as the online deleted tasks
-     ( onlineDeletedTasksData.docs
+      (onlineDeletedTasksData.docs
               .takeWhile(
-                (element) => offlineDeletedTasks?.any((e) => e.id == element.id) ?? false,
+                (element) =>
+                    offlineDeletedTasks?.any((e) => e.id == element.id) ??
+                    false,
               )
-              .length ) ==
+              .length) ==
           (offlineDeletedTasks?.length ?? 0)) {
         // empty the deleted tasks collection
-          var deletedTaskRef = await userDoc.collection('deletedTasks').get();
-          for (final doc in deletedTaskRef.docs) {
-            await doc.reference.delete();
-          }  
-  
-        
+        var deletedTaskRef = await userDoc.collection('deletedTasks').get();
+        for (final doc in deletedTaskRef.docs) {
+          await doc.reference.delete();
+        }
       } else {
         //check and delete from  online data using the deleted tasks
-        for (var deletedTask in (offlineDeletedTasks??[])) {
+        for (var deletedTask in (offlineDeletedTasks ?? [])) {
           // remove the deleted task from the online data
           await userDoc.collection('tasks').doc(deletedTask.id).delete();
         }
@@ -157,21 +159,29 @@ class FirebaseTodotaskDataSourceImpl
 
       //SECTION[Start] - Updated Tasks Section
       // if the offline data is newer than the online data
-      if ((offlineLastDataUpdate?.isAfter(onlineLastDataUpdate?.toDate()??DateTime(100))??
-      offlineData!=null
-      )
-      ) {
+      if ((offlineLastDataUpdate?.isAfter(
+            onlineLastDataUpdate?.toDate() ?? DateTime(1999),
+          ) ??
+          offlineData != null)) {
         // update the online data with the offline data
-        for (var offlineTask in offlineData??[]) {
+        for (var offlineTask in offlineData ?? <TodoTaskModel>[]) {
           // check if the offline task is in the online data
           if (onlineData.docs.any((element) => element.id == offlineTask.id)) {
             // update the online task with the offline task
             final task = await userDoc.collection('tasks').doc(offlineTask.id);
+            
             //check if the online task is newer than the offline task
-            if (((await task.get())['lastDataUpdate'] as Timestamp)
+            var lastUp = (await task.get()) ['updatedAt']?? DateTime(1999);
+            if (
+              
+              (lastUp as Timestamp)
                 .toDate()
-                .isAfter(offlineTask.updatedAt!)) {
+                .isAfter(offlineTask.updatedAt ?? DateTime(1999))) {
               continue;
+            } else if (!onlineData.docs.any(
+              (element) => element.id == offlineTask.id,
+            )) {
+              task.update(offlineTask.toJson());
             } else {
               // update the online task with the offline task
               // if the offline task is newer than the online task

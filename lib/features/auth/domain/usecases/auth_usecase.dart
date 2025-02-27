@@ -64,15 +64,7 @@ class SignOutUseCase extends UseCase<void, NoParms> {
       // sign out
       await _authRepository.signOut();
       // free hive box
-      
-      final tasks= await Hive.openBox('tasks');
-      await tasks.clear();
-
-      final lastDataUpdated= await Hive.openBox('lastDataUpdate');
-      await lastDataUpdated.clear();
-
-      final deletedTasks =await Hive.openBox('deletedTasks');
-      await deletedTasks.clear();
+      await Hive.deleteFromDisk();
 
       
 
