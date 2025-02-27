@@ -51,7 +51,7 @@ class RouterManager {
                         return const SplashScreen();
                       },
                       (isLogIn) {
-                        return isLogIn ? BlocProvider<TodoTaskBloc>(create: (_)=>TodoTaskBloc(ServiceLocator.I.getIt()),child:HomeScreen()) : SplashScreen();
+                        return isLogIn ? BlocProvider<TodoTaskBloc>(create: (_)=>TodoTaskBloc(ServiceLocator.I.getIt),child:HomeScreen()) : SplashScreen();
                       },
                     );
                   }
@@ -68,7 +68,7 @@ class RouterManager {
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterScreen());
       case '/home':
-        return MaterialPageRoute(builder: (_) => BlocProvider<TodoTaskBloc>(create: (_)=>TodoTaskBloc(ServiceLocator.I.getIt()),child: HomeScreen()));
+        return MaterialPageRoute(builder: (_) => BlocProvider<TodoTaskBloc>(create: (_)=>TodoTaskBloc(ServiceLocator.I.getIt),child: HomeScreen()));
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
     }

@@ -99,17 +99,12 @@ _getIt.registerSingleton<ToggleTodoTaskUseCase>(
   ToggleTodoTaskUseCase(_getIt())
 );
 
-_getIt.registerSingleton<GetTodoTasksUseCase>(
- GetTodoTasksUseCase(_getIt())
+_getIt.registerSingleton<SyncTodoTasksDataUseCase>(
+ SyncTodoTasksDataUseCase(_getIt())
 );
 
-_getIt.registerSingleton<GetOfflineTodoTasksUseCase>(
- GetOfflineTodoTasksUseCase(_getIt())
-);
 
-_getIt.registerSingleton<GetOnlineTodoTasksUseCase>(
- GetOnlineTodoTasksUseCase(_getIt())
-);
+
 //[TodoTaskUseCases] -END
 
 

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_ce_flutter/adapters.dart';
+import 'package:todo_me/features/task/data/models/todo_task_model.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
 import 'package:todo_me/features/task/presentation/bloc/task_bloc.dart';
 import 'package:todo_me/features/task/presentation/bloc/task_state.dart';
 import 'package:todo_me/features/task/presentation/widgets/task_line_widget.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/usecases/task_usecase.dart';
+import '../bloc/task_event.dart';
 import '../widgets/drawer_widget.dart';
 import '../widgets/note_page_widget.dart';
 import '../widgets/add_new_task_widget.dart';
@@ -24,13 +24,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  final dataStream = ServiceLocator.I.getIt<GetTodoTasksUseCase>().call(
-    NoParms(),
-  );
   @override
   void initState() {
     super.initState();
-    // BlocProvider.of<TodoTaskBloc>(context).add(GetTodoTasksEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TodoTaskBloc>().add(SyncTodoTaskEvent());
+    });
   }
 
   @override
@@ -45,13 +44,12 @@ class _HomeScreenState extends State<HomeScreen>
       listener: (BuildContext context, TaskState state) {
         debugPrint("state: $state");
         switch (state) {
-          
           case TaskLoadingState():
             showTopSnackBar(
               Overlay.of(context),
               CustomSnackBar.info(message: "Loading Tasks Please Wait..."),
             );
-            ;
+
             break;
           case TaskDeletedState():
             showTopSnackBar(
@@ -100,37 +98,37 @@ class _HomeScreenState extends State<HomeScreen>
                   fit: BoxFit.fill,
                 ),
               ),
-              StreamBuilder(
-                stream: dataStream,
-                builder: (context, snapshot) {
-                  return NotePageWidget(
-                    containerColor: Colors.white,
-                    children: [
-                      if (snapshot.hasError) Center(child: Text('Error')),
-                      ...[
-                        AddNewTaskWidget(height: size.height * .065),
-                        if (snapshot.hasData)
-                          snapshot.data!.fold(
-                            (error) => const Text('Error'),
-                            (tasks) =>
-                                tasks.isEmpty
-                                    ? NotePageWidget.withEndTaskContainer()
-                                    : ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: tasks.length,
-                                      itemBuilder: (context, index) {
-                                        return TaskLineWidget(
-                                          key: ValueKey(tasks[index].id),
-                                          todoTask: tasks[index],
-                                          height: size.height * .065,
-                                        );
-                                      },
-                                    ),
-                          ),
-                      ],
-                    ],
+              FutureBuilder<Box<TodoTaskModel>>(
+                future: Hive.openBox<TodoTaskModel>('tasks'),
+                builder: (context, fBox) {
+                 
+                  return ValueListenableBuilder(
+                    valueListenable: fBox.data!.listenable(),
+                    builder: (context, modelDTOBox, _) {
+                      return NotePageWidget(
+                        containerColor: Colors.white,
+                        children: [
+                          AddNewTaskWidget(height: size.height * .065),
+                          if (modelDTOBox.isEmpty)
+                            NotePageWidget.withEndTaskContainer(),
+                          
+                          if (modelDTOBox.isNotEmpty)
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: modelDTOBox.length,
+                              itemBuilder: (context, index) {
+                                return TaskLineWidget(
+                                  key: ValueKey(modelDTOBox.getAt(index)?.id),
+                                  todoTask: modelDTOBox.getAt(index)!.toEntity(),
+                                  height: size.height * .065,
+                                );
+                              },
+                            ),
+                        ],
+                      );
+                    },
                   );
-                },
+                }
               ),
             ],
           ),

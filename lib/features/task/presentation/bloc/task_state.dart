@@ -22,6 +22,9 @@ class TaskUpdatedState extends TaskState {}
 
 class TaskToggledState extends TaskState {}
 
+class TaskSuccessfullySyncedState extends TaskState {}
+class TaskFailureSyncedState extends TaskState {}
+
 
 class TodoTaskErrorState extends TaskState {
   final String message;

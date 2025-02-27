@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive_ce/hive.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:todo_me/assets/assets_manager.dart';
 import 'package:todo_me/core/theme/app_colors.dart';
@@ -74,7 +73,7 @@ class HomeCustomDrawer extends StatelessWidget {
                 (state){
                   //Todo crate best practice to clear all data if  user logout
                   // this is bad practice but time is limited
-                  Hive.openBox('tasks').then((value) => value.clear());
+                  
                   Navigator.of(context).pushReplacementNamed(
                     ServiceLocator.I.getIt<RouterManager>().login,
                   );

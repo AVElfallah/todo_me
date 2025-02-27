@@ -1,0 +1,9 @@
+{
+  "commenting": {
+    "prompt": "add a simple comments",
+    "context": {
+      "selection": true
+    },
+    "mode": "edit"
+  }
+}
