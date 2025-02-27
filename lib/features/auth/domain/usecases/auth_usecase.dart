@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:todo_me/core/errors/failurs.dart';
 
 import '../../../../core/usecases/usecase.dart';
@@ -59,7 +60,29 @@ class SignOutUseCase extends UseCase<void, NoParms> {
   @override
   Future<Either<Failures,void>> call
   (NoParms parms) async {
-    return await _authRepository.signOut();
+    try {
+      // sign out
+      await _authRepository.signOut();
+      // free hive box
+      
+      final tasks= await Hive.openBox('tasks');
+      await tasks.clear();
+
+      final lastDataUpdated= await Hive.openBox('lastDataUpdate');
+      await lastDataUpdated.clear();
+
+      final deletedTasks =await Hive.openBox('deletedTasks');
+      await deletedTasks.clear();
+
+      
+
+      
+      return Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+
+  
   }
 }
 

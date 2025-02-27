@@ -66,7 +66,6 @@ class ToggleTodoTaskUseCase extends UseCase<TodoTask, String> {
     SyncTodoTasksDataUseCase(this.repository);
     @override
     Future<Either<Failures, bool>> call(NoParms prams) async {
-     
       
       return repository.syncTasks();
     }
