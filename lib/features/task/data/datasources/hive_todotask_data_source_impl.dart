@@ -156,7 +156,7 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
       //SECTION[Start] - Tasks Section
       // if the online data is newer than the offline data, update the offline data
       if ((OnlineLastDataUpdate?.isAfter(
-            lastDataUpdateBox.get('lastDataUpdate')!,
+            lastDataUpdateBox.get('lastDataUpdate')??DateTime(1999),
           ) ??
           onlineData != null)) {
         //update the offline data with the online data
@@ -165,7 +165,7 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
           if (box.containsKey(oTask.id)) {
             // check if the online task is newer than the offline task
             if (oTask.createdAt?.isAfter(
-                  box.get(oTask.id)?.updatedAt ?? DateTime(1),
+                  box.get(oTask.id)?.updatedAt ?? DateTime(1999),
                 ) ??
                 false) {
               // update the offline task
