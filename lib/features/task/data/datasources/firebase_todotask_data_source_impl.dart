@@ -54,7 +54,7 @@ class FirebaseTodotaskDataSourceImpl
     var snapshots = await userDoc.collection('tasks').get();
     // Get the lastDataUpdate timestamp from the user's document
     final lastDataUpdate =
-        (await userDoc.get()).data()!['lastDataUpdate'] as Timestamp;
+       ( (await userDoc.get()).data()?['lastDataUpdate']??Timestamp.fromDate(DateTime(1990)) ) as Timestamp;
     // Return the tasks and the lastDataUpdate timestamp
     return (
       snapshots.docs.map((doc) => TodoTaskModel.fromJson(doc.data())).toList(),
@@ -118,7 +118,7 @@ class FirebaseTodotaskDataSourceImpl
       final onlineData = await userDoc.collection('tasks').get();
       // get last update data
       final onlineLastDataUpdate =
-          (await userDoc.get()).data()!['lastDataUpdate'] as Timestamp?;
+          (await userDoc.get()).data()?['lastDataUpdate'] as Timestamp?;
       // get deleted tasks
       final onlineDeletedTasksData =
           await userDoc.collection('deletedTasks').get();
@@ -157,7 +157,7 @@ class FirebaseTodotaskDataSourceImpl
 
       //SECTION[Start] - Updated Tasks Section
       // if the offline data is newer than the online data
-      if ((offlineLastDataUpdate?.isAfter(onlineLastDataUpdate?.toDate()??DateTime(100))??
+      if ((offlineLastDataUpdate?.isAfter(onlineLastDataUpdate?.toDate()??DateTime(1999))??
       offlineData!=null
       )
       ) {
