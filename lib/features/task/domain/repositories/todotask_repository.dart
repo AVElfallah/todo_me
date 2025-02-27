@@ -9,8 +9,7 @@ abstract class TodoTaskRepository {
   Future<Either<Failures,TodoTask>> updateTodoTask(TodoTask todoTask);
   Future<Either<Failures,TodoTask>> toggleTodoTask(String id);
 
-  @Deprecated('this function replaced')
-  Stream<Either<Failures,List<TodoTask>>> getTodoTasks();
+
 
 
 

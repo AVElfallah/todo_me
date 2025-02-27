@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:todo_me/core/usecases/usecase.dart';
 
 import '../../domain/usecases/task_usecase.dart';
 import 'task_event.dart';
@@ -10,10 +11,22 @@ class TodoTaskBloc extends Bloc<TaskEvent, TaskState> {
   final GetIt locator;
 
   TodoTaskBloc(this.locator) : super(TaskInitialState()) {
+    on<SyncTodoTaskEvent>(_onSyncTodoTask);
     on<CreateTodoTaskEvent>(_onCreateTodoTask);
     on<UpdateTodoTaskEvent>(_onUpdateTodoTask);
     on<DeleteTodoTaskEvent>(_onDeleteTodoTask);
     on<ToggleTodoTaskEvent>(_onToggleTodoTask);
+  }
+  Future<void> _onSyncTodoTask(
+    SyncTodoTaskEvent event,
+    Emitter<TaskState> emit,
+  ) async {
+    final syncTaskUsecase = locator<SyncTodoTasksDataUseCase>();
+    final result = await syncTaskUsecase.call(NoParms());
+    result.fold(
+      (failure) => emit(TodoTaskErrorState(failure.message)),
+      (isSynced) => emit(isSynced ? TaskSuccessfullySyncedState() : TaskFailureSyncedState()),
+    );
   }
 
   Future<void> _onCreateTodoTask(

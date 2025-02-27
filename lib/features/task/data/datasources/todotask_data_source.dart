@@ -13,7 +13,7 @@ abstract class TodoTaskDataSource<T> {
   Future<TodoTaskModel> updateTodoTask(TodoTaskModel todoTask);
   Future<TodoTaskModel> toggleTodoTask(String id);
   Future<(List<TodoTaskModel>?,DateTime?)> getAllTodoTasks();
-  Future<List<DeletedTodoTaskModel>> getDeletedTasksIds();
+  Future<List<DeletedTodoTaskModel>> getDeletedTasks();
   Future<bool> syncAndUpdateCurrentData(List<TodoTaskModel> data,DateTime lastDataUpdate, List<DeletedTodoTaskModel> deletedTasks);
 
   // Constructor to initialize the data source

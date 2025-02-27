@@ -205,7 +205,7 @@ class FirebaseTodotaskDataSourceImpl
   }
 
   @override
-  Future<List<DeletedTodoTaskModel>> getDeletedTasksIds() async {
+  Future<List<DeletedTodoTaskModel>> getDeletedTasks() async {
     try {
       final currentUser = await FirebaseAuth.instance.currentUser!.uid;
       final userDoc = await source.collection('users').doc(currentUser);

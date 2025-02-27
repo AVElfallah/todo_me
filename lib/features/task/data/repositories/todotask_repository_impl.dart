@@ -12,38 +12,6 @@ class TodotaskRepositoryImpl extends TodoTaskRepository {
   final TodoTaskDataSource _offlineDataSource;
 
   TodotaskRepositoryImpl(this._onlineDataSource, this._offlineDataSource);
-@override
-Stream<Either<Failures, List<TodoTask>>> getTodoTasks() async* {
-  final controller = StreamController<Either<Failures, List<TodoTask>>>.broadcast();
-  StreamSubscription<List<TodoTaskModel>>? subscription;
-
-  try {
-    Stream<List<TodoTaskModel>> stream;
-
-    if ((await InternetConnection().internetStatus) == InternetStatus.connected) {
-      stream = _onlineDataSource.getTodoTasks();
-    } else {
-      stream = _offlineDataSource.getTodoTasks();
-    }
-
-    subscription = stream.listen(
-      (data) {
-        final tasks = data.map((model) => model.toEntity()).toList();
-        controller.add(Right(tasks)); // Emit the updated tasks list
-      },
-      onError: (error) {
-        controller.add(Left(ServerFailure(error.toString())));
-      },
-    );
-
-    yield* controller.stream;
-  } finally {
-    // Cleanup when the stream is closed
-    await subscription?.cancel();
-    await controller.close();
-  }
-}
-
 
   @override
   Future<Either<Failures, TodoTask>> createTodoTask(TodoTask todoTask) async {
@@ -102,11 +70,41 @@ Stream<Either<Failures, List<TodoTask>>> getTodoTasks() async* {
       return Left(CacheFailure(e.message));
     }
   }
-  
+
   @override
-  Future<Either<Failures, bool>> syncTasks() {
-    // TODO: implement syncTasks
-    throw UnimplementedError();
+  Future<Either<Failures, bool>> syncTasks() async {
+    // we consider the offline data source as the source of truth
+    // so we need to sync the online data source with the offline data source
+    // we can do this by getting the data from the offline data source and sync it with the online data source
+    try {
+      // get data from offline data source
+      final (offlineTasks, offlineLastDataUpdate) =
+          await _offlineDataSource.getAllTodoTasks();
+
+      // get data from online data source
+      final (onlineTasks, onlineLastDataUpdate) =
+          await _onlineDataSource.getAllTodoTasks();
+
+      // get deleted tasks from offline and online data sources
+      final offlineDeleteTasks = await _offlineDataSource.getDeletedTasks();
+      final onlineDeleteTasks = await _onlineDataSource.getDeletedTasks();
+
+      // sync offline data with online data
+      final isOfflineDone = await _offlineDataSource.syncAndUpdateCurrentData(
+        onlineTasks ?? [],
+        onlineLastDataUpdate ?? DateTime.now(),
+        offlineDeleteTasks,
+      );
+      // sync online data with offline data
+      final isOnlineDone = await _onlineDataSource.syncAndUpdateCurrentData(
+        offlineTasks ?? [],
+        offlineLastDataUpdate ?? DateTime.now(),
+        onlineDeleteTasks,
+      );
+
+      return Right(isOfflineDone && isOnlineDone);
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
   }
-  
 }

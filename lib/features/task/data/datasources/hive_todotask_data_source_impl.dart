@@ -104,7 +104,7 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
   }
 
   @override
-  Future<List<DeletedTodoTaskModel>> getDeletedTasksIds() async {
+  Future<List<DeletedTodoTaskModel>> getDeletedTasks() async {
     // open deletedTasks box
     final box = await source.openBox<DeletedTodoTaskModel>('deletedTasks');
     // get all deleted tasks from the box
