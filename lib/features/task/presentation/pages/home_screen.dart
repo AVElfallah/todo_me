@@ -101,34 +101,34 @@ class _HomeScreenState extends State<HomeScreen>
               FutureBuilder<Box<TodoTaskModel>>(
                 future: Hive.openBox<TodoTaskModel>('tasks'),
                 builder: (context, fBox) {
-                 
-                  return ValueListenableBuilder(
-                    valueListenable: fBox.data!.listenable(),
-                    builder: (context, modelDTOBox, _) {
-                      return NotePageWidget(
-                        containerColor: Colors.white,
-                        children: [
-                          AddNewTaskWidget(height: size.height * .065),
-                          if (modelDTOBox.isEmpty)
-                            NotePageWidget.withEndTaskContainer(),
-                          
-                          if (modelDTOBox.isNotEmpty)
-                            ListView.builder(
+                  return NotePageWidget(
+                    containerColor: Colors.white,
+                    children: [
+                      AddNewTaskWidget(height: size.height * .065),
+                      if (fBox.connectionState == ConnectionState.waiting)
+                        NotePageWidget.withEndTaskContainer(),
+
+                      if (fBox.connectionState == ConnectionState.done)
+                        ValueListenableBuilder(
+                          valueListenable: fBox.data!.listenable(),
+                          builder: (context, modelDTOBox, _) {
+                            return ListView.builder(
                               shrinkWrap: true,
                               itemCount: modelDTOBox.length,
                               itemBuilder: (context, index) {
                                 return TaskLineWidget(
                                   key: ValueKey(modelDTOBox.getAt(index)?.id),
-                                  todoTask: modelDTOBox.getAt(index)!.toEntity(),
+                                  todoTask:
+                                      modelDTOBox.getAt(index)!.toEntity(),
                                   height: size.height * .065,
                                 );
                               },
-                            ),
-                        ],
-                      );
-                    },
+                            );
+                          },
+                        ),
+                    ],
                   );
-                }
+                },
               ),
             ],
           ),
