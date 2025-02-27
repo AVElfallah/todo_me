@@ -62,7 +62,7 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
     final task = box.get(id);
 
     // Create a new task object with the isCompleted field toggled
-    final updatedTask = task?.copyWith(isCompleted: !task.isCompleted!);
+    final updatedTask = task?.copyWith(isCompleted: !task.isCompleted!, updatedAt: Timestamp.now().toDate());
 
     // Update the task in the Hive box with the new task object
     box.put(id, updatedTask!);
@@ -83,7 +83,7 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
     final lastDataUpdateBox = await source.openBox<DateTime>('lastDataUpdate');
 
     // Update the task in the Hive box with the new task object
-    box.put(todoTask.id, todoTask);
+    box.put(todoTask.id, todoTask.copyWith(updatedAt: Timestamp.now().toDate()));
     // update last update date
     lastDataUpdateBox.put('lastDataUpdate', Timestamp.now().toDate());
 
@@ -164,7 +164,7 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
           // check if the task is already in the offline data
           if (box.containsKey(oTask.id)) {
             // check if the online task is newer than the offline task
-            if (oTask.createdAt?.isAfter(
+            if (oTask.updatedAt?.isAfter(
                   box.get(oTask.id)?.updatedAt ?? DateTime(1999),
                 ) ??
                 false) {
