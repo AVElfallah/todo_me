@@ -24,9 +24,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+  late final Future<Box<TodoTaskModel>> _taskBoxFuture;
+
+
   @override
   void initState() {
     super.initState();
+
+    _taskBoxFuture = Hive.openBox<TodoTaskModel>('tasks');
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TodoTaskBloc>().add(SyncTodoTaskEvent());
     });
@@ -42,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen>
     final size = MediaQuery.of(context).size;
     return BlocConsumer<TodoTaskBloc, TaskState>(
       listener: (BuildContext context, TaskState state) {
-        debugPrint("state: $state");
+
+        debugPrint("UI was rebuild with state: $state");
         switch (state) {
           case TaskLoadingState():
             showTopSnackBar(
@@ -98,37 +105,38 @@ class _HomeScreenState extends State<HomeScreen>
                   fit: BoxFit.fill,
                 ),
               ),
-              FutureBuilder<Box<TodoTaskModel>>(
-                future: Hive.openBox<TodoTaskModel>('tasks'),
-                builder: (context, fBox) {
+             FutureBuilder(
+                future: _taskBoxFuture,
+                builder: (context, snapshot) {
                   return NotePageWidget(
                     containerColor: Colors.white,
                     children: [
                       AddNewTaskWidget(height: size.height * .065),
-                      if (fBox.connectionState == ConnectionState.waiting)
-                        NotePageWidget.withEndTaskContainer(),
+                      if (snapshot.connectionState == ConnectionState.waiting)
+                        const Center(child: CircularProgressIndicator()),
 
-                      if (fBox.connectionState == ConnectionState.done)
-                        ValueListenableBuilder(
-                          valueListenable: fBox.data!.listenable(),
-                          builder: (context, modelDTOBox, _) {
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: modelDTOBox.length,
-                              itemBuilder: (context, index) {
-                                return TaskLineWidget(
-                                  key: ValueKey(modelDTOBox.getAt(index)?.id),
-                                  todoTask:
-                                      modelDTOBox.getAt(index)!.toEntity(),
-                                  height: size.height * .065,
-                                );
-                              },
-                            );
-                          },
-                        ),
+                      if (snapshot.connectionState == ConnectionState.done)  
+                  
+                      ValueListenableBuilder(
+                        valueListenable:
+                            snapshot.data!.listenable(),
+                        builder: (context, modelDTOBox, _) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: modelDTOBox.length,
+                            itemBuilder: (context, index) {
+                              return TaskLineWidget(
+                                key: ValueKey(modelDTOBox.getAt(index)?.id),
+                                todoTask: modelDTOBox.getAt(index)!.toEntity(),
+                                height: size.height * .065,
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ],
                   );
-                },
+                }
               ),
             ],
           ),

@@ -10,13 +10,17 @@ import 'task_state.dart';
 class TodoTaskBloc extends Bloc<TaskEvent, TaskState> {
   final GetIt locator;
 
+
   TodoTaskBloc(this.locator) : super(TaskInitialState()) {
+    
     on<SyncTodoTaskEvent>(_onSyncTodoTask);
     on<CreateTodoTaskEvent>(_onCreateTodoTask);
     on<UpdateTodoTaskEvent>(_onUpdateTodoTask);
     on<DeleteTodoTaskEvent>(_onDeleteTodoTask);
     on<ToggleTodoTaskEvent>(_onToggleTodoTask);
   }
+
+
   Future<void> _onSyncTodoTask(
     SyncTodoTaskEvent event,
     Emitter<TaskState> emit,
@@ -25,7 +29,9 @@ class TodoTaskBloc extends Bloc<TaskEvent, TaskState> {
     final result = await syncTaskUsecase.call(NoParms());
     result.fold(
       (failure) => emit(TodoTaskErrorState(failure.message)),
-      (isSynced) => emit(isSynced ? TaskSuccessfullySyncedState() : TaskFailureSyncedState()),
+      (isSynced) => emit(
+        isSynced ? TaskSuccessfullySyncedState() : TaskFailureSyncedState(),
+      ),
     );
   }
 

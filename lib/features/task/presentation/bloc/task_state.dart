@@ -12,6 +12,10 @@ abstract class TaskState extends Equatable {
 
 class TaskInitialState extends TaskState {}
 
+class HiveBoxCreatedSuccessfullyState extends TaskState {}
+
+class HiveBoxErrorOnCreationState extends TaskState{}
+
 class TaskLoadingState extends TaskState {}
 
 class TaskDeletedState extends TaskState {}

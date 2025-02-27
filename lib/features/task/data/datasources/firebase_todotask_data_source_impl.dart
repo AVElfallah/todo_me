@@ -75,7 +75,7 @@ class FirebaseTodotaskDataSourceImpl
     // Toggle the task's completion status
     final updatedTask = TodoTaskModel.fromJson(
       taskData,
-    ).copyWith(isCompleted: !taskData['isCompleted']??false, updatedAt: DateTime.now());
+    ).copyWith(isCompleted: !taskData['isCompleted'], updatedAt: DateTime.now());
     // Update the task in the user's collection
     await userDoc.collection('tasks').doc(id).update(updatedTask.toJson());
 

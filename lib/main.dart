@@ -14,6 +14,8 @@ import 'features/auth/application/bloc/auth_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  
   
   Hive.init((await path_provider.getApplicationDocumentsDirectory()).path);
   
@@ -21,6 +23,7 @@ void main() async {
 
   HiveAdapters.registerAdapters();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   //لتفعيل الكاشينج في الفايربيس
   // بحيث عندما يكون البرنامج اوفلاين يقوم بحفظ البيانات في الكاشنج
   FirebaseFirestore.instance.settings = const Settings(

@@ -15,6 +15,9 @@ abstract class TaskEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class OpenTaskBoxEvent extends TaskEvent {
+  OpenTaskBoxEvent({Function(TaskState)? onCompleted}):super(onCompleted);
+}
 class SyncTodoTaskEvent extends TaskEvent {
   SyncTodoTaskEvent({Function(TaskState)? onCompleted}):super(onCompleted);
 }
