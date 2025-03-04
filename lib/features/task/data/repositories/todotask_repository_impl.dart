@@ -102,6 +102,9 @@ class TodotaskRepositoryImpl extends TodoTaskRepository {
         onlineDeleteTasks,
       );
 
+      await _offlineDataSource.updateLastDataUpdate();
+    await  _onlineDataSource.updateLastDataUpdate();
+
       return Right(isOfflineDone && isOnlineDone);
     } catch (e) {
       return Left(CacheFailure(e.toString()));

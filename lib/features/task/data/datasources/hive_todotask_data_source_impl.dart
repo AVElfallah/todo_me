@@ -62,7 +62,10 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
     final task = box.get(id);
 
     // Create a new task object with the isCompleted field toggled
-    final updatedTask = task?.copyWith(isCompleted: !task.isCompleted!, updatedAt: Timestamp.now().toDate());
+    final updatedTask = task?.copyWith(
+      isCompleted: !task.isCompleted!,
+      updatedAt: Timestamp.now().toDate(),
+    );
 
     // Update the task in the Hive box with the new task object
     box.put(id, updatedTask!);
@@ -83,7 +86,10 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
     final lastDataUpdateBox = await source.openBox<DateTime>('lastDataUpdate');
 
     // Update the task in the Hive box with the new task object
-    box.put(todoTask.id, todoTask.copyWith(updatedAt: Timestamp.now().toDate()));
+    box.put(
+      todoTask.id,
+      todoTask.copyWith(updatedAt: Timestamp.now().toDate()),
+    );
     // update last update date
     lastDataUpdateBox.put('lastDataUpdate', Timestamp.now().toDate());
 
@@ -118,67 +124,77 @@ class HiveTodotaskDataSourceImpl extends TodoTaskDataSource<HiveInterface> {
     DateTime? OnlineLastDataUpdate,
     List<DeletedTodoTaskModel>? onlineDeletedTasks,
   ) async {
-    // open tasks box
     try {
+      // فتح صناديق البيانات
       final box = await source.openBox<TodoTaskModel>('tasks');
-      // open deletedTasks box
       final deletedTasksBox = await source.openBox<DeletedTodoTaskModel>(
         'deletedTasks',
       );
-      // open lastDataUpdate box
       final lastDataUpdateBox = await source.openBox<DateTime>(
         'lastDataUpdate',
       );
 
       //SECTION[Start] - Deleted Tasks Section
-      //checking if the online deleted tasks are the same as the offline deleted tasks
-      if ((onlineDeletedTasks ?? [])
-              .toList()
-              .takeWhile((dTask) => deletedTasksBox.containsKey(dTask.id))
-              .length ==
-          deletedTasksBox.length) {
-        //if they are the same, delete all the offline deleted tasks
+      if ((onlineDeletedTasks ?? []).length == deletedTasksBox.length &&
+          (onlineDeletedTasks ?? []).every(
+            (dTask) => deletedTasksBox.containsKey(dTask.id),
+          )) {
+        // إذا كانت المهام المحذوفة متطابقة، قم بمسحها محليًا
         deletedTasksBox.clear();
       } else {
-        // check and delete from offline data
+        // حذف المهام المحذوفة أونلاين من البيانات المحلية
         for (var dTask in onlineDeletedTasks ?? []) {
-          // delete from offline data
           if (deletedTasksBox.containsKey(dTask.id)) {
             deletedTasksBox.delete(dTask.id);
           }
-          // empty the deletedTasks box
-          deletedTasksBox.clear();
         }
+        // تفريغ صندوق المهام المحذوفة
+        deletedTasksBox.clear();
       }
-
       //SECTION[End] - Deleted Tasks Section
 
       //SECTION[Start] - Tasks Section
-      // if the online data is newer than the offline data, update the offline data
-      if ((OnlineLastDataUpdate?.isAfter(
-            lastDataUpdateBox.get('lastDataUpdate')??DateTime(1999),
-          ) ??
-          onlineData != null)) {
-        //update the offline data with the online data
+
+      final lastUpdate =
+          lastDataUpdateBox.get('lastDataUpdate') ?? DateTime(1999);
+
+      final shouldUpdate =
+          (OnlineLastDataUpdate != null &&
+              OnlineLastDataUpdate.isAfter(lastUpdate));
+              
+      final hasNewData = (onlineData != null && onlineData.isNotEmpty);
+
+      if (shouldUpdate || hasNewData) {
         for (var oTask in onlineData ?? <TodoTaskModel>[]) {
-          // check if the task is already in the offline data
           if (box.containsKey(oTask.id)) {
-            // check if the online task is newer than the offline task
+            // التحقق مما إذا كانت المهمة الأونلاين أحدث من المحلية
             if (oTask.updatedAt?.isAfter(
                   box.get(oTask.id)?.updatedAt ?? DateTime(1999),
                 ) ??
                 false) {
-              // update the offline task
               box.put(oTask.id, oTask);
             }
           } else {
             box.put(oTask.id, oTask);
           }
         }
-
-        //SECTION[End] - Tasks Section
       }
-      lastDataUpdateBox.put('lastDataUpdate', Timestamp.now().toDate());
+      //SECTION[End] - Tasks Section
+
+      return Future.value(true);
+    } catch (e) {
+      return Future.value(false);
+    }
+  }
+
+  @override
+  Future<bool> updateLastDataUpdate() async {
+    try {
+      // open lastDataUpdate box
+      final lastDataUpdateBox = await source.openBox<DateTime>(
+        'lastDataUpdate',
+      );
+      lastDataUpdateBox.put('lastDataUpdate', DateTime.now());
       return Future.value(true);
     } catch (e) {
       return Future.value(false);

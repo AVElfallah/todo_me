@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
+    _taskBoxFuture.then((box) => box.close());
     super.dispose();
   }
 

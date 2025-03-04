@@ -15,6 +15,7 @@ abstract class TodoTaskDataSource<T> {
   Future<(List<TodoTaskModel>?,DateTime?)> getAllTodoTasks();
   Future<List<DeletedTodoTaskModel>> getDeletedTasks();
   Future<bool> syncAndUpdateCurrentData(List<TodoTaskModel> data,DateTime lastDataUpdate, List<DeletedTodoTaskModel> deletedTasks);
+  Future<bool> updateLastDataUpdate();
 
   // Constructor to initialize the data source
   TodoTaskDataSource(this.source);
