@@ -33,4 +33,14 @@ class Validators {
     }
     return Left(null);
   }
+
+  static Either<void, String?> taskName(String? params) {
+    if (params == null) {
+      return Right('Task name is required');
+    }
+    if (params.length < 3) {
+      return Right('Task name must be at least 3 characters');
+    }
+    return Left(null);
+  }
 }
