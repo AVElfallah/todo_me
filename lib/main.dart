@@ -10,7 +10,7 @@ import 'package:todo_me/firebase_options.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'core/utils/hive_adapter.dart';
-import 'features/auth/application/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -26,7 +26,7 @@ class AuthRepositoryImpl extends AuthRepository{
   @override
   Future<Either<Failures, void>> signInWithEmailAndPassword(String email, String password)async {
    try {
-       await dataSource.signInWithEmailAndPassword(email, password);
+      await dataSource.signInWithEmailAndPassword(email, password);
       return Right(null);
     }on FirebaseException catch (e) {
       return Left(

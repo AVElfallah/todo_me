@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_me/app/service_locator.dart';
 import 'package:todo_me/app/common/loading_overly.dart';
-import 'package:todo_me/features/auth/application/bloc/auth_bloc.dart';
+import 'package:todo_me/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 

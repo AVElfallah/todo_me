@@ -12,7 +12,7 @@ import 'package:todo_me/features/task/data/datasources/hive_todotask_data_source
 
 import '../features/auth/data/datasources/auth_data_source.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
-import '../features/auth/application/bloc/auth_bloc.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/task/data/repositories/todotask_repository_impl.dart';
 import '../features/task/domain/repositories/todotask_repository.dart';
 import '../features/task/domain/usecases/task_usecase.dart';
