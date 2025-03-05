@@ -77,6 +77,15 @@ class _HomeScreenState extends State<HomeScreen>
               CustomSnackBar.success(message: "Task Updated Successfully"),
             );
             break;
+          case TaskSuccessfullySyncedState():
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.success(message: "Task Synced Successfully",
+              icon: Icon(Icons.sync,size: 120,color: Color(0x15000000),),
+              ),
+            );
+            break;
+          
           case TodoTaskErrorState():
             showTopSnackBar(
               Overlay.of(context),

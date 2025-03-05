@@ -8,7 +8,7 @@ import 'package:todo_me/features/task/presentation/bloc/task_bloc.dart';
 import 'package:todo_me/features/task/presentation/bloc/task_event.dart';
 
 import '../../../../core/theme/app_colors.dart';
-
+// This widget allows users to add a new task to the task list.
 class AddNewTaskWidget extends StatefulWidget {
   const AddNewTaskWidget({super.key, this.height = 50});
 
@@ -45,14 +45,15 @@ class _TaskNewLineWidgetState extends State<AddNewTaskWidget> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: widget.height,
-
       child: Form(
+        // Form widget to validate the input
         key: formKey,
         child: TextFormField(
           focusNode: focusNode,
-          //  readOnly: true,
           controller: controller,
+          // Automatically validate the input when the user interacts with the form
           autovalidateMode: AutovalidateMode.onUserInteraction,
+          // Validator for the text field input
           validator: (value) {
             return Validators.taskName(value).fold((l) => null, (r) => r);
           },
@@ -65,14 +66,15 @@ class _TaskNewLineWidgetState extends State<AddNewTaskWidget> {
             color: AppColors.mainTextColor,
           ),
           decoration: InputDecoration(
+            // Prefix icon button to add a new task
             prefixIcon: IconButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
+                  // Dispatches an event to create a new task
                   context.read<TodoTaskBloc>().add(
                     CreateTodoTaskEvent(
                       TodoTask(
-                        id:
-                            '${Random().nextInt(1000)}:${DateTime.now().millisecondsSinceEpoch}',
+                        id: '${Random().nextInt(1000)}:${DateTime.now().millisecondsSinceEpoch}',
                         title: controller!.text,
                         isCompleted: false,
                         createdAt: DateTime.now(),
@@ -80,18 +82,21 @@ class _TaskNewLineWidgetState extends State<AddNewTaskWidget> {
                       ),
                     ),
                   );
+                  // Clears the text field
                   controller?.clear();
+                  // Unfocus the text field
                   focusNode.unfocus();
+                  // Resets the form
+                  formKey.currentState?.reset();
                 }
               },
               icon: Icon(Icons.add),
             ),
             hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            //  filled: true,
-            //   fillColor: Colors.yellow,
             constraints: BoxConstraints(minHeight: 60, maxHeight: 60),
-
+            // Hint text for the text field
             hintText: "Add a new task",
+            // Border for the text field
             border: UnderlineInputBorder(
               borderSide: BorderSide(color: Color(0xff8E88F1), width: 5),
             ),
